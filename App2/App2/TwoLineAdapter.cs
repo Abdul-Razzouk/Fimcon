@@ -7,20 +7,20 @@ namespace App2
 {
     internal class TwoLineAdapter : BaseAdapter<Tuple<string, string>>
     {
-        private Agenda agenda;
-        private List<Tuple<string, string>> eventList;
+        private readonly Agenda _agenda;
+        private readonly List<Tuple<string, string>> _eventList;
 
         public TwoLineAdapter(Agenda agenda, List<Tuple<string, string>> eventList)
         {
-            this.agenda = agenda;
-            this.eventList = eventList;
+            _agenda = agenda;
+            _eventList = eventList;
         }
 
         public override Tuple<string, string> this[int position]
         {
             get
             {
-                return eventList[position];
+                return _eventList[position];
             }
         }
 
@@ -28,7 +28,7 @@ namespace App2
         {
             get
             {
-                return eventList.Count;
+                return _eventList.Count;
             }
         }
 
@@ -42,17 +42,16 @@ namespace App2
             var view = convertView;
             if (view == null)
             {
-                view = agenda.LayoutInflater.Inflate(Android.Resource.Layout.SimpleListItem2, null); 
+                view = _agenda.LayoutInflater.Inflate(Android.Resource.Layout.SimpleListItem2, null); 
             }
 
-            TextView text1 = view.FindViewById<TextView>(Android.Resource.Id.Text1);
-            TextView text2 = view.FindViewById<TextView>(Android.Resource.Id.Text2);
+            var text1 = view.FindViewById<TextView>(Android.Resource.Id.Text1);
+            var text2 = view.FindViewById<TextView>(Android.Resource.Id.Text2);
 
-            text1.Text = eventList[position].Item1;
-            text2.Text = eventList[position].Item2;
+            text1.Text = _eventList[position].Item1;
+            text2.Text = _eventList[position].Item2;
 
             return view;
-
         }
     }
 }

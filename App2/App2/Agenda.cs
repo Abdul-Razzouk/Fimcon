@@ -1,60 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using System.Net.Http;
 using System.Xml;
 
-
 namespace App2
-
-
 {
     
     [Activity(Label = "Agenda")]
     public class Agenda : Activity
     {
-        
-        ListView list;
+        private ListView _list;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.Agenda);
 
-              list = FindViewById<ListView>(Resource.Id.listView1);
+              _list = FindViewById<ListView>(Resource.Id.listView1);
             //new DownloadTest(list, this).Execute("https://google.de");
-             DownloadHomepage();
+
+            //todo this is a async method without await
+            DownloadHomepage();
         }
-        public async Task<int> DownloadHomepage()
+
+        private async Task<int> DownloadHomepage()
         {
             var httpClient = new HttpClient();
-            Task<string> contentsTask = httpClient.GetStringAsync("http://kei-to.de/fim/xml/example_events.xml");
-            string contents = await contentsTask;
+            var contentsTask = httpClient.GetStringAsync("http://kei-to.de/fim/xml/example_events.xml");
+            var contents = await contentsTask;
 
-
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.LoadXml(contents);
 
-            XmlNode root = doc.ChildNodes[1];
+            var root = doc.ChildNodes[1];
 		
 			var eventList = new List<Tuple<string, string>>();
             if (root.HasChildNodes)
-            {
-                
-                for (int i = 0; i < root.ChildNodes.Count; i++)
+            {             
+                for (var i = 0; i < root.ChildNodes.Count; i++)
                 {
                     string titel = "", dis = "", isActive= "", lectures="";
-                    XmlNode event1 = root.ChildNodes[i];
-                    for (int j = 0; j < event1.ChildNodes.Count;j++) {
-                        XmlNode eventattribut = event1.ChildNodes[j];
+                    var event1 = root.ChildNodes[i];
+                    for (var j = 0; j < event1.ChildNodes.Count;j++) {
+                        var eventattribut = event1.ChildNodes[j];
 
                         if (eventattribut.Name.Equals("title"))
                             titel = eventattribut.InnerText;
@@ -70,17 +62,9 @@ namespace App2
 
                     }
 					eventList.Add(new Tuple<string, string>(titel, dis));
-                    eventList.Add(new Tuple<string, string>(isActive, lectures));
-
-
-				}
-
-               
-
-
+                    eventList.Add(new Tuple<string, string>(isActive, lectures));                
+				}          
             }
-
-
 			//var eventList  = new string[] {"Begrüßung" , "Veranstaltung1" , "Veranstaltung2" };
 			
 			//eventList.Add(new Tuple<string, string>("Veranstaltung1", "22.03.16 - 17.30Uhr"));
@@ -88,9 +72,8 @@ namespace App2
 
             var adapter = new TwoLineAdapter(this, eventList);
 
-			list.Adapter = adapter;
+			_list.Adapter = adapter;
 			return 0; 
-		}
-		
+		}		
     }
 }
