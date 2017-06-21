@@ -54,11 +54,11 @@ namespace App2
 						else if (eventattribut.Name.Equals("description"))
                             dis = eventattribut.InnerText;
                         
-						/*else if (eventattribut.Name.Equals("isActive"))
+						else if (eventattribut.Name.Equals("isActive"))
 							isActive = eventattribut.InnerText;
                         
 						else if (eventattribut.Name.Equals("lectures"))
-							lectures = eventattribut.InnerText;*/
+							lectures = eventattribut.InnerText;
 
                     }
 					eventList.Add(new Tuple<string, string>(titel, dis));
